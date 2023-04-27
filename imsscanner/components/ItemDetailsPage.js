@@ -9,7 +9,7 @@ export default function ItemDetailsPage({ route }) {
     useEffect(() => {
         const fetchItemDetails = async () => {
             const token = await AsyncStorage.getItem('token');
-            const response = await fetch(`http://192.168.1.184:8080/api/item/${itemId}/`, {
+            const response = await fetch(`https://inventory-ms.herokuapp.com/api/item/${itemId}/`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },

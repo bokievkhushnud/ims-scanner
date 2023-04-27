@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet,TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ProfilePage = () => {
+const ProfilePage = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
 
   const fetchUserProfile = async () => {
     const token = await AsyncStorage.getItem('token');
-    const response = await fetch('http://192.168.1.184:8080/api/profile/', {
+    const response = await fetch('https://inventory-ms.herokuapp.com/api/profile/', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -20,6 +20,12 @@ const ProfilePage = () => {
     fetchUserProfile();
   }, []);
 
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    navigation.navigate('Login');
+  };
+
   return (
     <View style={styles.container}>
       {profile ? (
@@ -27,17 +33,21 @@ const ProfilePage = () => {
           <Image
             style={styles.profileImage}
             source={{
-              uri: `http://192.168.1.184:8080/${profile.profile_pic}`,
+              uri: profile.profile_pic,
             }}
           />
           <Text style={styles.name}>
             {profile.owner.first_name} {profile.owner.last_name}
           </Text>
           <Text style={styles.email}>{profile.owner.email}</Text>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
         </>
       ) : (
         <Text>Loading...</Text>
       )}
+
     </View>
   );
 };
@@ -61,6 +71,18 @@ const styles = StyleSheet.create({
   email: {
     fontSize: 18,
     color: '#888',
+  },
+
+  logoutButton: {
+    marginTop: 30,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    backgroundColor: '#FF0000',
+  },
+  logoutText: {
+    color: '#FFFFFF',
+    fontSize: 18,
   },
 });
 

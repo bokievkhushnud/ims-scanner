@@ -8,6 +8,8 @@ import ProfilePage from './components/ProfilePage';
 import AssignedItemsPage from './components/AssignedItemsPage';
 import QRScannerPage from './components/QRScannerPage'; // Import the QRScannerPage
 import ItemDetailsPage from './components/ItemDetailsPage'; // Import the ItemDetailsPage
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ItemAssignmentDetailPage from './components/ItemAssignmentDetailPage'; // Import the ItemAssignmentDetailPage
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -15,12 +17,40 @@ const Tab = createBottomTabNavigator();
 function AppTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Profile" component={ProfilePage} />
-      <Tab.Screen name="AssignedItems" component={AssignedItemsPage} />
-      <Tab.Screen name="QRScanner" component={QRScannerPage} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfilePage}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AssignedItems"
+        component={AssignedItemsPage}
+        options={{
+          tabBarLabel: 'Assigned Items',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="clipboard-list-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="QRScanner"
+        component={QRScannerPage}
+        options={{
+          tabBarLabel: 'QR Scanner',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="qrcode-scan" color={color} size={size} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
+
 
 export default function App() {
   return (
@@ -30,6 +60,8 @@ export default function App() {
         <Stack.Screen name="Register" component={RegisterPage} />
         <Stack.Screen name="Home" component={AppTabs} options={{ headerShown: false }} />
         <Stack.Screen name="ItemDetails" component={ItemDetailsPage} />
+        <Stack.Screen name="ItemAssignmentDetail" component={ItemAssignmentDetailPage} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

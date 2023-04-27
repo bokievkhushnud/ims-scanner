@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import { View, Text, FlatList, StyleSheet, RefreshControl, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const AssignedItemsPage = () => {
+const AssignedItemsPage = ({ navigation }) => {
   const [assignedItems, setAssignedItems] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchAssignedItems = async () => {
     const token = await AsyncStorage.getItem('token');
-    const response = await fetch('http://192.168.1.184:8080/api/items/', {
+    const response = await fetch('https://inventory-ms.herokuapp.com/api/items/', {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -31,12 +31,15 @@ const AssignedItemsPage = () => {
       <FlatList
         data={assignedItems}
         renderItem={({ item }) => (
-          <View style={styles.itemContainer}>
-            <Text style={styles.itemName}>{item.item_name}</Text>
-            <Text>Quantity: {item.quantity}</Text>
-            <Text>location: {item.location}</Text>
-            <Text>Assigned By: {item.done_by.first_name} {item.done_by.last_name}</Text>
-          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('ItemAssignmentDetail', { itemAssignment: item })}>
+            <View style={styles.itemContainer}>
+              <Image source={{ uri: item.item.image }} style={styles.itemImage} />
+              <View style={styles.itemTextContainer}>
+                <Text style={styles.itemName}>{item.item.item_name}</Text>
+                <Text style={styles.itemQuantity}>Quantity: {item.quantity}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.item.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -50,16 +53,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  itemName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
   itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 16,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: '#ccc',
     marginBottom: 8,
+  },
+  itemImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 4,
+    marginRight: 16,
+  },
+  itemTextContainer: {
+    flex: 1,
+  },
+  itemName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  itemQuantity: {
+    fontSize: 14,
+    color: '#666',
   },
 });
 
