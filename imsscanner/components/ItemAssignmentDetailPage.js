@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity,ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ItemAssignmentDetailPage = ({ route }) => {
   const { itemAssignment } = route.params;
   const [itemStatus, setItemStatus] = useState(itemAssignment.item.status);
-
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const formatDate = (dateString) => {
@@ -14,8 +14,10 @@ const ItemAssignmentDetailPage = ({ route }) => {
   };
 
   const handleReportBroken = async () => {
+    setIsLoading(true);
     const token = await AsyncStorage.getItem('token');
 
+  
     try {
       const response = await fetch(
         `https://inventory-ms.herokuapp.com/api/broken/items/${itemAssignment.item.id}/`,
@@ -39,10 +41,11 @@ const ItemAssignmentDetailPage = ({ route }) => {
       // Handle error, e.g., show an alert
       console.error(error);
       alert('Error occurred while sending report');
+    } finally {
+      setIsLoading(false);
     }
   };
   
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={{ uri: itemAssignment.item.image }} style={styles.itemImage} />
@@ -50,24 +53,29 @@ const ItemAssignmentDetailPage = ({ route }) => {
         <Text style={styles.itemName}>{itemAssignment.item.item_name}</Text>
         <Text style={styles.infoText}>Quantity: {itemAssignment.quantity}</Text>
         <Text style={styles.infoText}>Price: {itemAssignment.item.price} {itemAssignment.item.currency}</Text>
-        <Text style={styles.infoText}>Department: {itemAssignment.department}</Text>
+        <Text style={styles.infoText}>Department: {itemAssignment.department.name}</Text>
         <Text style={styles.infoText}>Location: {itemAssignment.location}</Text>
         <Text style={styles.infoText}>Assigned By: {itemAssignment.done_by.first_name} {itemAssignment.done_by.last_name} ({itemAssignment.done_by.email})</Text>
         <Text style={styles.infoText}>Date: {formatDate(itemAssignment.date)}</Text>
         <Text style={styles.infoText}>Due Date: {formatDate(itemAssignment.due_date)}</Text>
         <Text style={styles.infoText}>Notes: {itemAssignment.notes}</Text>
       </View>
-      {itemStatus !== 'broken' ? (
-        <TouchableOpacity style={styles.reportBrokenButton} onPress={handleReportBroken}>
-          <Text style={styles.reportBrokenButtonText}>Report Broken</Text>
-        </TouchableOpacity>
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <View style={styles.reportedButton}>
-          <Text style={styles.reportedButtonText}>Reported</Text>
-        </View>
+        itemStatus !== 'broken' ? (
+          <TouchableOpacity style={styles.reportBrokenButton} onPress={handleReportBroken}>
+            <Text style={styles.reportBrokenButtonText}>Report Broken</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.reportedButton}>
+            <Text style={styles.reportedButtonText}>Reported</Text>
+          </View>
+        )
       )}
     </ScrollView>
   );
+  
 };
 
 const styles = StyleSheet.create({
