@@ -1,4 +1,6 @@
 import React from 'react';
+import 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -56,15 +58,18 @@ function AppTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginPage} />
-        <Stack.Screen name="Home" component={AppTabs} options={{ headerShown: false }} />
-        <Stack.Screen name="ItemDetails" component={ItemDetailsPage}  options={{ title: 'Item Details' }} />
-        <Stack.Screen name="ItemAssignmentDetail" component={ItemAssignmentDetailPage}  options={{ title: 'Item Details' }}/>
-        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Change Password' }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginPage} />
+          <Stack.Screen name="Home" component={AppTabs} options={{ headerShown: false }} />
+          <Stack.Screen name="ItemDetails" component={ItemDetailsPage} options={{ title: 'Item Details' }} />
+          <Stack.Screen name="ItemAssignmentDetail" component={ItemAssignmentDetailPage} options={{ title: 'Item Details' }} />
+          <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Change Password' }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
+
   );
 }
