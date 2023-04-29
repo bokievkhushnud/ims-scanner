@@ -41,13 +41,13 @@ export default function QRScanner({ navigation }) {
           style={StyleSheet.absoluteFillObject}
         >
           <View style={styles.overlay}>
-            <View style={styles.unfocusedContainer}></View>
-            <View style={styles.middleContainer}>
-              <View style={styles.unfocusedContainer}></View>
+            <View style={styles.topOverlay}></View>
+            <View style={styles.row}>
+              <View style={styles.sideOverlay}></View>
               <View style={styles.scanner}></View>
-              <View style={styles.unfocusedContainer}></View>
+              <View style={styles.sideOverlay}></View>
             </View>
-            <View style={styles.unfocusedContainer}></View>
+            <View style={styles.bottomOverlay}></View>
           </View>
         </BarCodeScanner>
       )}
@@ -60,30 +60,43 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 16,
+    marginBottom: 16,
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
-  middleContainer: {
+  topOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    width: '100%',
+  },
+  bottomOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    width: '100%',
+  },
+  row: {
     flexDirection: 'row',
   },
-  unfocusedContainer: {
+  sideOverlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    height: 200,
   },
   scanner: {
     width: 200,
     height: 200,
     borderColor: '#fff',
-    borderWidth: 2,
-    borderRadius: 4,
+    borderWidth: 4,
   },
-  infoText: {
-    fontSize: 18,
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 16,
-  },
+
 });

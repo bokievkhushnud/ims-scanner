@@ -10,7 +10,7 @@ import QRScannerPage from './components/QRScannerPage'; // Import the QRScannerP
 import ItemDetailsPage from './components/ItemDetailsPage'; // Import the ItemDetailsPage
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ItemAssignmentDetailPage from './components/ItemAssignmentDetailPage'; // Import the ItemAssignmentDetailPage
-
+import ChangePasswordScreen from './components/ChangePasswordScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -28,7 +28,7 @@ function AppTabs() {
         }}
       />
       <Tab.Screen
-        name="AssignedItems"
+        name="Assigned Items"
         component={AssignedItemsPage}
         options={{
           tabBarLabel: 'Assigned Items',
@@ -59,8 +59,10 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginPage} />
         <Stack.Screen name="Register" component={RegisterPage} />
         <Stack.Screen name="Home" component={AppTabs} options={{ headerShown: false }} />
-        <Stack.Screen name="ItemDetails" component={ItemDetailsPage} />
-        <Stack.Screen name="ItemAssignmentDetail" component={ItemAssignmentDetailPage} />
+        <Stack.Screen name="ItemDetails" component={ItemDetailsPage}  options={{ title: 'Item Details' }} />
+        <Stack.Screen name="ItemAssignmentDetail" component={ItemAssignmentDetailPage}  options={{ title: 'Item Details' }}/>
+        <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Change Password' }}
+        />
 
       </Stack.Navigator>
     </NavigationContainer>

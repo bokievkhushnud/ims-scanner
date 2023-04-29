@@ -3,9 +3,11 @@ import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIn
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ItemDetailsPage({ route }) {
+
     const [itemDetails, setItemDetails] = useState(null);
     const [itemStatus, setItemStatus] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(false);
     const { itemId } = route.params;
 
     useEffect(() => {
@@ -22,8 +24,9 @@ export default function ItemDetailsPage({ route }) {
                 setItemDetails(data);
                 setItemStatus(data.status);
             } else {
-                setItemDetails(null);
+                setError(true);
             }
+            setIsLoading(false);
         };
 
         fetchItemDetails();
@@ -59,30 +62,52 @@ export default function ItemDetailsPage({ route }) {
         }
     };
 
-    if (itemDetails === null) {
+
+    if (isLoading) {
         return (
-          <View style={styles.invalidItemContainer}>
-            <Text style={styles.invalidItemText}>Invalid Item ID or item not found.</Text>
-          </View>
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
         );
-      }
+    }
+
+    if (error) {
+        return (
+            <View style={styles.invalidItemContainer}>
+                <Text style={styles.invalidItemText}>Invalid Item ID or item not found.</Text>
+            </View>
+        );
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Image source={{ uri: itemDetails.image }} style={styles.itemImage} />
             <View style={styles.infoContainer}>
                 <Text style={styles.itemName}>{itemDetails.item_name}</Text>
-                <Text style={styles.infoText}>Price: {itemDetails.price} {itemDetails.currency}</Text>
-                <Text style={styles.infoText}>Department: {itemDetails.department.name}</Text>
-                <Text style={styles.infoText}>Category: {itemDetails.category.name}</Text>
-                <Text style={styles.infoText}>Item Code: {itemDetails.item_code}</Text>
-                <Text style={styles.infoText}>Quantity: {itemDetails.quantity} {itemDetails.quantity_unit}</Text>
-                <Text style={styles.infoText}>Location: {itemDetails.location}</Text>
-                <Text style={styles.infoText}>Description: {itemDetails.description}</Text>
-                <Text style={styles.infoText}>Expiration Date: {itemDetails.expiration_date}</Text>
-                <Text style={styles.infoText}>Status: {itemStatus}</Text>
-                <Text style={styles.infoText}>Notes: {itemDetails.notes}</Text>
-                
+                <Text style={styles.fieldName}>Department:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.department.name}</Text>
+                <Text style={styles.fieldName}>Holder(s):</Text>
+                {itemDetails.holder.map((user, index) => (
+                    <Text style={styles.fieldValue} key={index}>{user.email}</Text>
+                ))}
+                <Text style={styles.fieldName}>Price:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.price} {itemDetails.currency}</Text>
+                <Text style={styles.fieldName}>Category:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.category.name}</Text>
+                <Text style={styles.fieldName}>Item Code:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.item_code}</Text>
+                <Text style={styles.fieldName}>Quantity:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.quantity} {itemDetails.quantity_unit}</Text>
+                <Text style={styles.fieldName}>Location:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.location}</Text>
+                <Text style={styles.fieldName}>Description:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.description}</Text>
+                <Text style={styles.fieldName}>Expiration Date:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.expiration_date}</Text>
+                <Text style={styles.fieldName}>Status:</Text>
+                <Text style={styles.fieldValue}>{itemStatus}</Text>
+                <Text style={styles.fieldName}>Notes:</Text>
+                <Text style={styles.fieldValue}>{itemDetails.notes}</Text>
             </View>
             {isLoading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
@@ -100,6 +125,7 @@ export default function ItemDetailsPage({ route }) {
         </ScrollView>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
@@ -161,9 +187,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-      },
-      invalidItemText: {
+    },
+    invalidItemText: {
         fontSize: 18,
         color: '#444',
-      },
+    },
+    fieldName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#444',
+        marginBottom: 2,
+    },
+    fieldValue: {
+        fontSize: 16,
+        color: '#444',
+        marginBottom: 15,
+        paddingLeft: 0,
+    },
+    loadingContainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });

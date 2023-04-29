@@ -8,6 +8,9 @@ import {
   ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from 'expo-image-picker';
+import ChangePasswordScreen from './ChangePasswordScreen';
+
 
 const ProfilePage = ({ navigation }) => {
   const [profile, setProfile] = useState(null);
@@ -35,50 +38,100 @@ const ProfilePage = ({ navigation }) => {
     navigation.navigate("Login");
   };
 
-  const handleChangePic = () => {
-    // Implement the change profile picture logic
+
+  const openImagePickerAsync = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+
+    const pickerResult = await ImagePicker.launchImageLibraryAsync();
+    return pickerResult;
   };
 
-  const handleChangePassword = () => {
-    // Implement the change password logic
+  const handleChangePic = async () => {
+    const image = await openImagePickerAsync();
+    if (image.canceled === true) {
+      return;
+    }
+
+    const token = await AsyncStorage.getItem('token');
+    const uri = image.assets[0].uri;
+    const uriParts = uri.split('.');
+    const fileType = uriParts[uriParts.length - 1];
+
+    const formData = new FormData();
+    formData.append('profile_pic', {
+      uri,
+      name: `photo.${fileType}`,
+      type: `image/${fileType}`,
+    });
+
+    const response = await fetch('https://inventory-ms.herokuapp.com/api/change_profile_pic/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (response.ok) {
+      alert('Profile picture updated');
+      fetchUserProfile(); // Reload profile data to show the new picture
+    } else {
+      alert('Failed to update profile picture');
+    }
   };
+
+
+  const handleNavigateToChangePassword = () => {
+    navigation.navigate('ChangePassword');
+
+  }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {profile ? (
-        <>
-          <Image
-            style={styles.profileImage}
-            source={{
-              uri: profile.profile_pic,
-            }}
-          />
-          <View style={styles.infoContainer}>
-            <Text style={styles.name}>
-              {profile.owner.first_name} {profile.owner.last_name}
-            </Text>
-            <Text style={styles.email}>{profile.owner.email}</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.changePicButton}
+    <ScrollView contentContainerStyle={styles.container} >
+      {
+        profile ? (
+          <>
+            <Image
+              style={styles.profileImage}
+              source={{
+                uri: profile.profile_pic,
+              }}
+            />
+            <View style={styles.infoContainer}>
+              <Text style={styles.name}>
+                {profile.owner.first_name} {profile.owner.last_name}
+              </Text>
+              <Text style={styles.email}>{profile.owner.email}</Text>
+            </View>
+
+             <TouchableOpacity
+            style={[styles.button, styles.changePicButton]}
             onPress={handleChangePic}
           >
             <Text style={styles.buttonText}>Change Profile Picture</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.changePasswordButton}
-            onPress={handleChangePassword}
+            style={[styles.button, styles.changePasswordButton]}
+            onPress={handleNavigateToChangePassword}
           >
             <Text style={styles.buttonText}>Change Password</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <TouchableOpacity
+            style={[styles.button, styles.logoutButton]}
+            onPress={handleLogout}
+          >
             <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
         </>
       ) : (
         <Text>Loading...</Text>
       )}
-    </ScrollView>
+    </ScrollView >
   );
 };
 
@@ -115,26 +168,21 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: "center",
   },
-  changePicButton: {
-    backgroundColor: "#2ed573",
+  button: {
     borderRadius: 4,
     paddingVertical: 12,
     paddingHorizontal: 16,
     marginBottom: 16,
+ 
+  },
+  changePicButton: {
+    backgroundColor: "#1abc9c",
   },
   changePasswordButton: {
-    backgroundColor: "#ff4757",
-    borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    backgroundColor: "#3498db",
   },
   logoutButton: {
-    backgroundColor: "#747d8c",
-    borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginBottom: 16,
+    backgroundColor: "#95a5a6",
   },
   buttonText: {
     color: "#fff",

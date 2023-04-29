@@ -13,8 +13,10 @@ const AssignedItemsPage = ({ navigation }) => {
         'Authorization': `Bearer ${token}`,
       },
     });
+
     const data = await response.json();
     setAssignedItems(data);
+
   };
 
   const onRefresh = () => {
@@ -41,31 +43,33 @@ const AssignedItemsPage = ({ navigation }) => {
             </View>
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => item.item.toString()}
+        keyExtractor={(item) => item.item.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
     </View>
   );
+
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 0,
   },
   itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
     padding: 16,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderColor: '#e0e0e0',
+    
   },
   itemImage: {
     width: 60,
     height: 60,
-    borderRadius: 4,
+    borderRadius: 8,
     marginRight: 16,
   },
   itemTextContainer: {
@@ -74,6 +78,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 4,
   },
   itemQuantity: {
     fontSize: 14,
