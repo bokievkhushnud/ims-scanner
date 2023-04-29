@@ -1,9 +1,9 @@
 import React from 'react';
+import { enableScreens } from 'react-native-screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
 import ProfilePage from './components/ProfilePage';
 import AssignedItemsPage from './components/AssignedItemsPage';
 import QRScannerPage from './components/QRScannerPage'; // Import the QRScannerPage
@@ -11,6 +11,8 @@ import ItemDetailsPage from './components/ItemDetailsPage'; // Import the ItemDe
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ItemAssignmentDetailPage from './components/ItemAssignmentDetailPage'; // Import the ItemAssignmentDetailPage
 import ChangePasswordScreen from './components/ChangePasswordScreen';
+enableScreens();
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -57,13 +59,11 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginPage} />
-        <Stack.Screen name="Register" component={RegisterPage} />
         <Stack.Screen name="Home" component={AppTabs} options={{ headerShown: false }} />
         <Stack.Screen name="ItemDetails" component={ItemDetailsPage}  options={{ title: 'Item Details' }} />
         <Stack.Screen name="ItemAssignmentDetail" component={ItemAssignmentDetailPage}  options={{ title: 'Item Details' }}/>
         <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Change Password' }}
         />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
