@@ -5,6 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -51,7 +53,11 @@ const ChangePasswordScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+
       <View style={styles.passwordCard}>
         <Text style={styles.passwordTitle}>Change Password</Text>
         <TextInput
@@ -82,7 +88,8 @@ const ChangePasswordScreen = ({ navigation }) => {
           <Text style={styles.changePasswordButtonText}>Change Password</Text>
         </TouchableOpacity>
       </View>
-    </View>
+
+    </KeyboardAvoidingView>
   );
 };
 

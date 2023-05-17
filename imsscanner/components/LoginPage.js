@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
-
 import {
   View,
   Text,
@@ -8,7 +7,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  Image,
+  KeyboardAvoidingView,
+  Platform,
   Linking,
   Modal,
 } from "react-native";
@@ -76,7 +76,10 @@ const LoginPage = ({ navigation }) => {
 
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <Modal animationType="fade" transparent visible={showError}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -131,7 +134,7 @@ const LoginPage = ({ navigation }) => {
       <TouchableOpacity onPress={openForgotPasswordPage}>
         <Text style={styles.forgotPasswordLink}>Forgot Password?</Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 
 };

@@ -45,6 +45,7 @@ const AssignedItemsPage = ({ navigation }) => {
         )}
         keyExtractor={(item) => item.item.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        ListEmptyComponent={<Text style={styles.emptyMessage}>No assigned items</Text>} // Add this line
       />
     </View>
   );
@@ -84,6 +85,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
+  emptyMessage: {
+      fontSize: 18,
+      textAlign: 'center', // center the text
+      marginTop: 20, // add some top margin
+    }
 });
 
 export default AssignedItemsPage;

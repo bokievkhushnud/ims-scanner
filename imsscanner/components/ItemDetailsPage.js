@@ -28,7 +28,6 @@ export default function ItemDetailsPage({ route }) {
             }
             setIsLoading(false);
         };
-
         fetchItemDetails();
     }, [itemId]);
 
@@ -61,8 +60,6 @@ export default function ItemDetailsPage({ route }) {
             setIsLoading(false);
         }
     };
-
-
     if (isLoading) {
         return (
             <View style={styles.loadingContainer}>
